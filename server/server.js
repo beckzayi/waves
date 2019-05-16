@@ -6,6 +6,7 @@ require('dotenv').config();
 const app = express();
 
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
 
 // Middleware
@@ -14,9 +15,11 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 const { auth } = require('./middleware/auth');
+const { admin } = require('./middleware/admin');
 
 // Models
 const { User } = require('./models/user');
+const { Brand } = require('./models/brand');
 
 // Routes
 app.get('/', (req, res) => {
@@ -114,6 +117,26 @@ app.get('/api/user/logout', auth, async (req, res) => {
     }
 
     return res.status(200).send({ success: true });
+});
+
+// ========================
+//          BRANDS
+// ========================
+
+app.post('/api/product/brand', auth, admin, async (req, res) => {
+    const brand = await new Brand({
+        name: req.body.name
+    }).save();
+
+    res.status(200).json({
+        success: true,
+        brand
+    });
+});
+
+app.get('/api/product/brands', async (req, res) => {
+    const brands = await Brand.find({});
+    res.status(200).send(brands);
 });
 
 const port = process.env.PORT || 3002;

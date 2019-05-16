@@ -1,0 +1,11 @@
+const admin = (req, res, next) => {
+    if (req.user.role === 0) {
+        return res.json({
+            isAdmin: false
+        });
+    }
+    
+    next();
+};
+
+module.exports = { admin };
