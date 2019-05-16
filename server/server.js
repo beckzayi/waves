@@ -93,6 +93,29 @@ app.post('/api/users/login', async (req, res) => {
     });
 });
 
+app.get('/api/user/logout', auth, async (req, res) => {
+    try {
+        const user = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            { token: '' }    
+        );
+
+        if (!user) {
+            return res.json({
+                success: false,
+                error: 'User not found'
+            });
+        }
+    } catch (err) {
+        return res.json({
+            success: false,
+            error: err
+        }); 
+    }
+
+    return res.status(200).send({ success: true });
+});
+
 const port = process.env.PORT || 3002;
 app.listen(port, () => {
     console.log(`Server running on ${port}`);
