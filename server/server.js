@@ -13,6 +13,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+const { auth } = require('./middleware/auth');
+
 // Models
 const { User } = require('./models/user');
 
@@ -25,6 +27,22 @@ app.get('/', (req, res) => {
 // ========================
 //          USERS
 // ========================
+
+app.get('/api/users/auth', auth, (req, res) => {
+    const { email, name, lastname, role, cart, history } = req.user;
+    res.status(200).json({
+        // user: req.user
+        isAdmin: role === 0 ? false : true,
+        isAuth: true,
+        email,
+        name,
+        lastname,
+        role,
+        cart,
+        history
+    });
+});
+
 app.post('/api/users/register', async (req, res) => {
     const user = new User(req.body);
     user.save((err, doc) => {
@@ -37,7 +55,7 @@ app.post('/api/users/register', async (req, res) => {
 
         res.status(200).json({
             success: true,
-            userdata: doc
+            // userdata: doc
         });
     });
 });
