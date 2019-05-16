@@ -20,6 +20,7 @@ const { admin } = require('./middleware/admin');
 // Models
 const { User } = require('./models/user');
 const { Brand } = require('./models/brand');
+const { Wood } = require('./models/wood');
 
 // Routes
 app.get('/', (req, res) => {
@@ -137,6 +138,26 @@ app.post('/api/product/brand', auth, admin, async (req, res) => {
 app.get('/api/product/brands', async (req, res) => {
     const brands = await Brand.find({});
     res.status(200).send(brands);
+});
+
+// ========================
+//          BRANDS
+// ========================
+
+app.post('/api/product/wood', auth, admin, async (req, res) => {
+    const wood = await new Wood({
+        name: req.body.name        
+    }).save();
+
+    res.status(200).json({
+        success: true,
+        wood
+    });
+});
+
+app.get('/api/product/woods', async (req, res) => {
+    const woods = await Wood.find({});
+    res.status(200).send(woods);
 });
 
 const port = process.env.PORT || 3002;
