@@ -174,6 +174,18 @@ app.post('/api/product/article', auth, admin, async (req, res) => {
     });
 });
 
+app.get('/api/product/article/:id', async (req, res) => {
+    const product = await Product.findById(req.params.id)
+                            .populate('brand')
+                            .populate('wood');
+
+    // Query multiple products
+    // items = ids.map(item => mongoose.Types.ObjectId(item));
+    // Product.find({ _id: { $in: items } });
+
+    res.status(200).send(product);
+});
+
 const port = process.env.PORT || 3002;
 app.listen(port, () => {
     console.log(`Server running on ${port}`);
