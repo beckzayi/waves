@@ -186,6 +186,23 @@ app.get('/api/product/article/:id', async (req, res) => {
     res.status(200).send(product);
 });
 
+// By ARRIVAL /articles?sortBy=createdAt&order=desc&limit=4
+// By SOLD
+app.get('/api/product/articles', async (req, res) => {
+    const sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    const order = req.query.order || 'desc';
+    const limit = req.query.limit ? parseInt(req.query.limit) : null;
+
+    const products = await Product.find()
+                        .populate('brand')
+                        .populate('wood')
+                        .sort({ [sortBy]: order })
+                        .limit(limit);
+
+    res.status(200).send(products);
+});
+
+
 const port = process.env.PORT || 3002;
 app.listen(port, () => {
     console.log(`Server running on ${port}`);
