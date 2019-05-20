@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import FormField from '../utils/Form/formfield';
 import { update, generateData, isFormValid } from '../utils/Form/formActions';
 import { connect } from 'react-redux';
+import { registerUser } from '../../actions/user_actions';
 
 class Register extends Component {
     state = {
         formError: false,
-        formSuccess: '',
+        formSuccess: false,
         formdata: {
             name: {
                 element: 'input',
@@ -103,7 +104,23 @@ class Register extends Component {
         let formIsValid = isFormValid(this.state.formdata,'register')
 
         if(formIsValid){
-            console.log(dataToSubmit);
+            this.props.dispatch(registerUser(dataToSubmit))
+            .then(response =>{ 
+                if(response.payload.success){
+                    console.log('register', response.payload);
+                    this.setState({
+                        formError: false,
+                        formSuccess: true
+                    });
+                    setTimeout(()=>{
+                        this.props.history.push('/register_login');
+                    }, 2000)
+                } else {
+                    this.setState({ formError: true })
+                }
+            }).catch(e => {
+                this.setState({ formError: true })
+            });
         } else {
             this.setState({
                 formError: true
