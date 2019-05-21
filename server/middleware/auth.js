@@ -7,26 +7,42 @@ const auth = async (req, res, next) => {
     const token = req.cookies.token;
 
     // verify the token
-    jwt.verify(token, process.env.SECRET, async function(err, decode){
-        const user = await User.findOne({
+    jwt.verify(token, process.env.SECRET, function(err, decode){
+        // const user = await User.findOne({
+        //     _id: decode,
+        //     token
+        // });
+
+        // if (err) {
+        //     throw err;
+        // }
+
+        // if (!user) {
+        //     return res.json({
+        //         isAuth: false,
+        //         error: true
+        //     });
+        // }
+
+        // req.token = token;
+        // req.user = user;
+        // next();
+
+        User.findOne({
             _id: decode,
             token
+        }, function(err, user){
+            if (err) throw err;
+            if (!user) {
+                return res.json({
+                    isAuth: false,
+                    error: true
+                })
+            }
+            req.token = token;
+            req.user = user;
+            next();
         });
-
-        if (err) {
-            throw err;
-        }
-
-        if (!user) {
-            return res.json({
-                isAuth: false,
-                error: true
-            });
-        }
-
-        req.token = token;
-        req.user = user;
-        next();
     })
 };
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FormField from '../utils/Form/formfield';
 import { update, generateData, isFormValid } from '../utils/Form/formActions';
 import { connect } from 'react-redux';
+import Dialog from '@material-ui/core/Dialog';
 import { registerUser } from '../../actions/user_actions';
 
 class Register extends Component {
@@ -190,6 +191,15 @@ class Register extends Component {
                         </div>
                     </div>
                 </div>
+
+                <Dialog open={this.state.formSuccess}>
+                    <div className="dialog_alert">
+                        <div>Congratulations !!</div>
+                        <div>
+                            You will be redirected to the LOGIN in a couple seconds...
+                        </div>
+                    </div>
+                </Dialog>
             </div>
         );
     }
